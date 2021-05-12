@@ -1,0 +1,30 @@
+{
+  "name": "@cnrdh/mwc-pwa-auth",
+  "version": "0.1.0",
+  "homepage": "https://vercel.app/",
+  "main": "./mwc-pwa-auth/define.js",
+  "author": "Conrad Helgeland",
+  "license": "MIT",
+  "dependencies": {
+    "@material/mwc-icon-button": "=0.21.0",
+    "@material/mwc-menu": "=0.21.0",
+    "@material/mwc-snackbar": "^0.21.0",
+    "@material/mwc-top-app-bar": "=0.21.0",
+    "@pwabuilder/pwaauth": "=0.9.7",
+    "lit": "2.0.0-rc.2"
+  },
+  "scripts": {
+    "test": "exit 0",
+    "build": "rimraf _dist/ && rollup --config rollup.config.js",
+    "dev": "concurrently \"rollup --config rollup.config.dev.js --watch\" \"web-dev-server --app-index _dev/index.html --root-dir _dev/ --compatibility none --node-resolve --watch --port 8778 /\""
+  },
+  "devDependencies": {
+    "@open-wc/rollup-plugin-html": "=1.2.5",
+    "@rollup/plugin-node-resolve": "=13.0.0",
+    "@web/dev-server": "=0.1.17",
+    "concurrently": "=6.1.0",
+    "rimraf": "=3.0.2",
+    "rollup": "=2.47.0",
+    "rollup-plugin-copy": "=3.4.0"
+  }
+}

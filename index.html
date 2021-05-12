@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="Material design styled sign in and avatar button"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <style>
+      :root {
+        --primary: 0, 0, 0;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        --mdc-theme-primary: rgba(var(--primary));
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script type="module" src="/mwc.js"></script>
+    <script type="module" src="/mwc-pwa-auth/define.js"></script>
+  </head>
+  <body>
+    <mwc-top-app-bar centerTitle>
+      <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
+      <div slot="title">mwc-pwa-auth</div>
+      <mwc-pwa-auth
+        slot="actionItems"
+        googlekey="451515477160-1mvef0b3ipcn9u0hjao31h4ug7ridum0.apps.googleusercontent.com"
+      >
+      </mwc-pwa-auth>
+      <div style="position: relative;">
+        <mwc-menu>
+          <mwc-list-item>
+            <a href="https://github.com/cnrdh/mwc-pwa-auth">
+              https://github.com/cnrdh/mwc-pwa-auth
+            </a>
+          </mwc-list-item>
+        </mwc-menu>
+      </div>
+    </mwc-top-app-bar>
+
+    <script type="module">
+      document
+        .querySelector(`mwc-icon-button[icon="menu"]`)
+        .addEventListener("click", () => {
+          document.querySelector(`mwc-menu`).open = true;
+        });
+      document
+        .querySelector("mwc-pwa-auth")
+        .addEventListener("mwc-pwa-auth", ({ detail }) => console.warn(detail));
+    </script>
+  </body>
+</html>
