@@ -1,16 +1,21 @@
-import { PwaAuth } from "@pwabuilder/pwaauth/build/pwa-auth.js";
+import { PwaAuth } from "../pwaauth.js";
 import "../mwc.js";
-import { html, LitElement } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { html, LitElement, ifDefined } from "../lit.js";
 
-export const renderPwaAuth = ({
-  name = "",
-  id = "",
-  iconURL,
-  host,
-  error,
-  icon = host.icon ?? "person",
-} = {}) => {
+export const renderPwaAuth = ({ host, html, ifDefined }) => {
+  const {
+    name,
+    id,
+    iconURL,
+    welcome,
+    appearance,
+    credentialmode,
+    error,
+    icon,
+    microsoftkey,
+    googlekey,
+  } = host;
+
   return html`<slot name="avatar">
       <mwc-icon-button
         icon="${iconURL ? undefined : icon}"
@@ -21,27 +26,27 @@ export const renderPwaAuth = ({
       </mwc-icon-button>
     </slot>
     <slot name="user-menu">
-      <div style="position: relative">
+      <div style="position: relative;">
         <mwc-menu id="user-menu">
           ${id && name
-            ? html`<mwc-list-item twoline graphic="avatar" noninteractive>
-                <span>${name}</span>
-                <span slot="secondary">${id}</span>
-                <mwc-icon slot="graphic">
-                  <img
-                    src="${ifDefined(iconURL)}"
-                    width="42"
-                    height="42"
-                    alt="avatar for ${name}"
-                  />
-                </mwc-icon>
-              </mwc-list-item> `
-            : null}
+            ? html`<mwc-list-item twoline noninteractive>
+                  <span>${name}</span>
+                  <span slot="secondary">${id}</span>
+                </mwc-list-item>
+                <img
+                  src="${ifDefined(iconURL)}"
+                  style="width:100%"
+                  alt="profile image for ${name}"
+                /> `
+            : html`<slot name="welcome">
+                <mwc-list-item noninteractive>${welcome}</mwc-list-item>
+              </slot>`}
+
           <pwa-auth
-            googlekey="${host.googlekey}"
-            microsoftkey="${host.microsoftkey}"
-            appearance="list"
-            credentialmode="prompt"
+            googlekey="${googlekey}"
+            microsoftkey="${microsoftkey}"
+            appearance="${host.appearance}"
+            credentialmode="${host.gredentialmode}"
             @signin-completed=${host.handlePwaSigninCompleted}
           ></pwa-auth>
         </mwc-menu>
@@ -62,11 +67,21 @@ export class MwcPwaAuth extends LitElement {
     name: { type: String },
     icon: { type: String },
     iconURL: { type: String },
+    welcome: { type: String },
     provider: { type: String },
+    appearance: { type: String },
+    credentialmode: { type: String },
     applekey: { type: String },
     googlekey: { type: String },
     microsoftkey: { type: String },
   };
+
+  constructor() {
+    super();
+    this.credentialmode = "silent";
+    this.appearance = "list";
+    this.icon = "person";
+  }
 
   get pwaauth() {
     return this.renderRoot.querySelector("pwa-auth");
@@ -83,38 +98,39 @@ export class MwcPwaAuth extends LitElement {
     ];
   }
 
-  async connectedCallback() {
-    PwaAuth.assetBaseUrl = "/@pwabuilder/pwaauth/assets";
-    super.connectedCallback();
-  }
+  firstUpdated() {
+    if (this.assets) {
+      PwaAuth.assetBaseUrl = this.assets;
+    }
 
-  async firstUpdated() {
     const iconButton = this.renderRoot.querySelector("mwc-icon-button");
     this.usermenu.anchor = iconButton;
 
     if (window.FederatedCredential) {
       const providers = this.providers;
 
-      const fedCred = await navigator.credentials.get({
-        federated: {
-          providers,
-        },
-      });
+      const fedCredP = navigator.credentials
+        .get({
+          federated: {
+            providers,
+          },
+        })
+        .then((fedCred) => {
+          if (fedCred) {
+            const { id, name, iconURL, provider, type, ...rest } = fedCred;
+            this.name = name;
+            this.id = id;
+            this.iconURL = iconURL;
+            this.provider = provider;
 
-      if (fedCred) {
-        const { id, name, iconURL, provider, type, ...rest } = fedCred;
-        this.name = name;
-        this.id = id;
-        this.iconURL = iconURL;
-        this.provider = provider;
-
-        this.dispatchEvent(
-          new CustomEvent("mwc-pwa-auth", {
-            detail: { id, name, iconURL, provider, type, ...rest },
-            bubbles: true,
-          })
-        );
-      }
+            this.dispatchEvent(
+              new CustomEvent("mwc-pwa-auth", {
+                detail: { id, name, iconURL, provider, type, ...rest },
+                bubbles: true,
+              })
+            );
+          }
+        });
     }
   }
 
@@ -134,7 +150,7 @@ export class MwcPwaAuth extends LitElement {
     this.providerData = providerData;
     this.error = error ? JSON.stringify(error) : undefined;
 
-    setTimeout(() => (this.usermenu.open = false), 1000);
+    setTimeout(() => (this.usermenu.open = false), 2000);
 
     this.dispatchEvent(
       new CustomEvent("mwc-pwa-auth", {
@@ -145,8 +161,10 @@ export class MwcPwaAuth extends LitElement {
   }
 
   render() {
-    const host = this;
-    const { id, name, iconURL, provider, error } = host;
-    return renderPwaAuth({ host, id, name, iconURL, error });
+    return renderPwaAuth({
+      host: this,
+      html,
+      ifDefined,
+    });
   }
 }

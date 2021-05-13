@@ -1,6 +1,6 @@
 {
   "name": "@cnrdh/mwc-pwa-auth",
-  "version": "0.1.0-pre",
+  "version": "0.1.0",
   "homepage": "https://mwc-pwa-auth.vercel.app/",
   "main": "./mwc-pwa-auth/define.js",
   "module": "./mwc-pwa-auth/define.js",
@@ -9,7 +9,7 @@
   "dependencies": {
     "@material/mwc-icon-button": "=0.21.0",
     "@material/mwc-menu": "=0.21.0",
-    "@material/mwc-snackbar": "^0.21.0",
+    "@material/mwc-snackbar": "=0.21.0",
     "@material/mwc-top-app-bar": "=0.21.0",
     "@pwabuilder/pwaauth": "=0.9.7",
     "lit": "2.0.0-rc.2"
