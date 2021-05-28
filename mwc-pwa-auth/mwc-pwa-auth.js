@@ -4,6 +4,14 @@ import { html, unsafeSVG, ifDefined, LitElement } from "../dep/lit.js";
 import { personSVG } from "./person-svg.js";
 import { renderPwaAuth } from "./render.js";
 
+const _providers = new PwaAuth().providers;
+
+const providerInfo = ({ provider, providers = _providers } = {}) =>
+  providers.find(({ name, url }) => provider === name || provider === url);
+
+const providerIconURL = ({ provider }) =>
+  providerInfo({ provider })?.getIconUrl();
+
 export class MwcPwaAuth extends LitElement {
   static properties = {
     id: { type: String },
@@ -12,6 +20,7 @@ export class MwcPwaAuth extends LitElement {
     iconURL: { type: String },
     welcome: { type: String },
     provider: { type: String },
+    providerIconURL: { type: String },
     appearance: { type: String },
     credentialmode: { type: String },
     applekey: { type: String },
@@ -32,14 +41,6 @@ export class MwcPwaAuth extends LitElement {
     return this.renderRoot.querySelector("#user-menu");
   }
 
-  get providers() {
-    return [
-      this.googlekey && "https://account.google.com",
-      this.microsoftkey && "https://graph.microsoft.com",
-      this.applekey && "https://appleid.apple.com",
-    ];
-  }
-
   firstUpdated() {
     if (this.assets) {
       PwaAuth.assetBaseUrl = this.assets;
@@ -49,8 +50,7 @@ export class MwcPwaAuth extends LitElement {
     this.usermenu.anchor = iconButton;
 
     if (window.FederatedCredential) {
-      const providers = this.providers;
-
+      const providers = _providers.map(({ url }) => url);
       const fedCredP = navigator.credentials
         .get({
           federated: {
@@ -64,6 +64,7 @@ export class MwcPwaAuth extends LitElement {
             this.id = id;
             this.iconURL = iconURL;
             this.provider = provider;
+            this.providerIconURL = providerIconURL({ provider });
 
             this.dispatchEvent(
               new CustomEvent("mwc-pwa-auth", {
@@ -89,10 +90,11 @@ export class MwcPwaAuth extends LitElement {
     this.id = email;
     this.iconURL = imageUrl;
     this.provider = provider;
+    this.providerIconURL = providerIconURL({ provider });
     this.providerData = providerData;
     this.error = error ? JSON.stringify(error) : undefined;
 
-    setTimeout(() => (this.usermenu.open = false), 2000);
+    this.usermenu.open = false;
 
     this.dispatchEvent(
       new CustomEvent("mwc-pwa-auth", {
