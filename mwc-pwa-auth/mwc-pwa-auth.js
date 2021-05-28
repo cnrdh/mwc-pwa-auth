@@ -1,7 +1,7 @@
 import { PwaAuth } from "../dep/pwaauth.js";
 import "../dep/mwc.js";
 import { html, unsafeSVG, ifDefined, LitElement } from "../dep/lit.js";
-import { personSVG } from "../_person.js";
+import { personSVG } from "./person-svg.js";
 import { renderPwaAuth } from "./render.js";
 
 export class MwcPwaAuth extends LitElement {
