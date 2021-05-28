@@ -49,23 +49,20 @@ export const renderPwaAuth = ({
                     alt="profile image for ${name ?? id}"
                   />
                 </p>
-                <mwc-list-item graphic="icon" ?hasMeta=${false} noninteractive>
+                <mwc-list-item graphic="icon" noninteractive>
                   <span>Signed in with ${provider}</span>
-
                   <img
                     slot="graphic"
                     src="${ifDefined(providerIconURL)}"
                     alt="provider logo"
                   />
-                  <!-- <span slot="meta">info</span> -->
-                </mwc-list-item>
-                <mwc-list-item noninteractive></mwc-list-item>`
+                </mwc-list-item>`
             : html`<slot name="welcome"
                 >${id
                   ? null
-                  : html`<mwc-list-item noninteractive
-                      >${welcome}
-                    </mwc-list-item>`}
+                  : html`<p>
+                      ${welcome}
+                    </p>`}
               </slot>`}
 
           <div ?hidden="${ifDefined(id)}">
@@ -82,17 +79,12 @@ export const renderPwaAuth = ({
         </mwc-menu>
       </div>
     </slot>
-
     <slot name="error">
       <mwc-snackbar
         id="snackbar-error"
         labeltext="Authentication with ${provider} failed"
         ?open="${ifDefined(error)}"
-      >
-        <mwc-icon-button icon="close" slot="dismiss"> </mwc-icon-button>
-      </mwc-snackbar>
+      ></mwc-snackbar>
     </slot>
-
-    <slot name="info"> </slot>
   </div>`;
 };
