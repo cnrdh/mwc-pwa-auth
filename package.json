@@ -2,6 +2,9 @@
   "name": "@cnrdh/mwc-pwa-auth",
   "version": "0.1.0",
   "homepage": "https://mwc-pwa-auth.vercel.app/",
+  "repository": {
+    "url": "https://github.com/cnrdh/mwc-pwa-auth"
+  },
   "main": "./mwc-pwa-auth/define.js",
   "module": "./mwc-pwa-auth/define.js",
   "author": "Conrad Helgeland",
@@ -17,10 +20,10 @@
   "scripts": {
     "test": "exit 0",
     "build": "rimraf _dist/ && rollup --config rollup.config.js",
-    "dev": "concurrently \"rollup --config rollup.config.dev.js --watch\" \"web-dev-server --app-index _dev/index.html --root-dir _dev/ --compatibility none --node-resolve --watch --port 8778 /\""
+    "dev": "concurrently \"rollup --config rollup.config.js --watch\" \"web-dev-server --app-index _dist/index.html --root-dir _dist/ --compatibility none --node-resolve --watch --port 8778 /\""
   },
   "devDependencies": {
-    "@open-wc/rollup-plugin-html": "=1.2.5",
+    "@open-wc/rollup-plugin-html": "^1.2.5",
     "@rollup/plugin-node-resolve": "=13.0.0",
     "@web/dev-server": "=0.1.17",
     "concurrently": "=6.1.0",
