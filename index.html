@@ -21,20 +21,16 @@
         display: none;
       }
     </style>
-    <!-- <link
-      href="https://fonts.googleapis.com/icon?family=Roboto:300,400,500|Material+Icons"
-      rel="stylesheet"
-    /> -->
-    <script type="module" src="/index.js"></script>
+    <script type="module" src="index.js"></script>
   </head>
   <body class="mdc-typography">
     <mwc-top-app-bar>
       <div slot="title">mwc-pwa-auth</div>
       <mwc-pwa-auth
-        assets="/@pwabuilder/pwaauth/assets"
         slot="actionItems"
+        assets="/@pwabuilder/pwaauth/assets"
         googlekey="451515477160-1mvef0b3ipcn9u0hjao31h4ug7ridum0.apps.googleusercontent.com"
-        microsoftkey="52d5f0df-702d-416d-9744-d2b5ff432dab"
+        microsoftkey="7cb4bceb-cbf5-41a2-ac56-3910f180907a"
       >
         <span slot="welcome">
           <h3 class="mdc-typography--headline1">mwc-pwa-auth</h3>
@@ -53,11 +49,6 @@
     </mwc-top-app-bar>
 
     <script type="module">
-      document
-        .querySelector(`mwc-icon-button[icon="menu"]`)
-        .addEventListener("click", () => {
-          document.querySelector(`mwc-menu`).open = true;
-        });
       document
         .querySelector("mwc-pwa-auth")
         .addEventListener("mwc-pwa-auth", ({ detail }) => console.warn(detail));
