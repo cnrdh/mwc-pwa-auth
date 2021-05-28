@@ -1,65 +1,8 @@
-import { PwaAuth } from "../pwaauth.js";
-import "../mwc.js";
-import { html, LitElement, ifDefined } from "../lit.js";
-
-export const renderPwaAuth = ({ host, html, ifDefined }) => {
-  const {
-    name,
-    id,
-    iconURL,
-    welcome,
-    appearance,
-    credentialmode,
-    error,
-    icon,
-    microsoftkey,
-    googlekey,
-  } = host;
-
-  return html`<slot name="avatar">
-      <mwc-icon-button
-        icon="${iconURL ? undefined : icon}"
-        @click="${host.handleAvatarClick}"
-        >${iconURL && id
-          ? html`<img src="${iconURL}" alt="${name ?? id}" />`
-          : null}
-      </mwc-icon-button>
-    </slot>
-    <slot name="user-menu">
-      <div style="position: relative;">
-        <mwc-menu id="user-menu">
-          ${id && name
-            ? html`<mwc-list-item twoline noninteractive>
-                  <span>${name}</span>
-                  <span slot="secondary">${id}</span>
-                </mwc-list-item>
-                <img
-                  src="${ifDefined(iconURL)}"
-                  style="width:100%"
-                  alt="profile image for ${name}"
-                /> `
-            : html`<slot name="welcome">
-                <mwc-list-item noninteractive>${welcome}</mwc-list-item>
-              </slot>`}
-
-          <pwa-auth
-            googlekey="${googlekey}"
-            microsoftkey="${microsoftkey}"
-            appearance="${host.appearance}"
-            credentialmode="${host.gredentialmode}"
-            @signin-completed=${host.handlePwaSigninCompleted}
-          ></pwa-auth>
-        </mwc-menu>
-      </div>
-    </slot>
-
-    <mwc-snackbar
-      labeltext="Authentication with ${host.provider} failed"
-      ?open="${ifDefined(error)}"
-    >
-      <mwc-icon-button icon="close" slot="dismiss"></mwc-icon-button
-    ></mwc-snackbar> `;
-};
+import { PwaAuth } from "../dep/pwaauth.js";
+import "../dep/mwc.js";
+import { html, unsafeSVG, ifDefined, LitElement } from "../dep/lit.js";
+import { personSVG } from "../_person.js";
+import { renderPwaAuth } from "./render.js";
 
 export class MwcPwaAuth extends LitElement {
   static properties = {
@@ -80,7 +23,6 @@ export class MwcPwaAuth extends LitElement {
     super();
     this.credentialmode = "silent";
     this.appearance = "list";
-    this.icon = "person";
   }
 
   get pwaauth() {
@@ -103,7 +45,7 @@ export class MwcPwaAuth extends LitElement {
       PwaAuth.assetBaseUrl = this.assets;
     }
 
-    const iconButton = this.renderRoot.querySelector("mwc-icon-button");
+    const iconButton = this.renderRoot.querySelector("slot[name='avatar'] > *");
     this.usermenu.anchor = iconButton;
 
     if (window.FederatedCredential) {
@@ -165,6 +107,8 @@ export class MwcPwaAuth extends LitElement {
       host: this,
       html,
       ifDefined,
+      unsafeSVG,
+      personSVG,
     });
   }
 }
